@@ -36,4 +36,12 @@ public class Book {
             System.out.println("Unknown owner");
         }
     }
+
+    public Owner getOwner() {
+        return this.owner;
+    }
+
+    public String getTitle(){
+        return this.title;
+    }
 }

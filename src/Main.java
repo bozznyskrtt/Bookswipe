@@ -86,5 +86,11 @@ public class Main {
         System.out.println(user10.getName());
 
         book1.getName();
+        user1.swipeRight(book6);
+        user1.getBookCandidates();
+        user2.getBookCandidates();
+        user2.swipeRight(book1);
+        user2.getBookCandidates();
+
     }
 }

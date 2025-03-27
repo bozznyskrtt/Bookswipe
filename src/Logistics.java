@@ -8,5 +8,5 @@ public class Logistics {
     String pickupAddressB;
     Status status;
 
-    enum Status { ENUMPENDING, PICKEDUP, INTRANSIT, DELIVERED, RETURNED }
+    enum Status { PENDING, PICKEDUP, INTRANSIT, DELIVERED, RETURNED }
 }
