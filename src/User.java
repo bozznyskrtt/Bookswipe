@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.Random;
 
-
 public class  User implements Owner{
     int userID;
     String username;
@@ -14,7 +13,6 @@ public class  User implements Owner{
     boolean isVerified;
     SubscriptionType subscription;
     List<BookCandidate> bookCandidates;
-    Random rand = new Random();
     enum SubscriptionType { SUB, NON_SUB }
 
     public User(int userID, String username, String userPassword, String email, String address, boolean isLibrarian, boolean isVerified, SubscriptionType subscription) {
@@ -68,6 +66,7 @@ public class  User implements Owner{
             if (candidate.userA.equals(this)) {
                 // 4. If yes, it's a match — you and the owner both liked each other's books
                 System.out.println("🎉 Match found between " + this.username + " and " + bookOwner.username);
+                Random rand = new Random();
                 BookMatch match = new BookMatch(
                         candidate.bookA,               // your book they liked (optional)
                         book,               // their book you liked
