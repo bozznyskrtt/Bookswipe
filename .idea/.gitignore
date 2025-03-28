@@ -1,8 +1,8 @@
 # Default ignored files
 /shelf/
-/workspace.xml
+/workspace.xml/
 .idea/
-/*.iml
+/*./
 /out/
 /.vscode/
-/.DS_Store
+/.DS_Store/

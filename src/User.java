@@ -14,6 +14,9 @@ public class  User implements Owner{
     SubscriptionType subscription;
     List<BookCandidate> bookCandidates;
     enum SubscriptionType { SUB, NON_SUB }
+    List<BookMatch> matches = new ArrayList<>();
+    Random rand = new Random();
+
 
     public User(int userID, String username, String userPassword, String email, String address, boolean isLibrarian, boolean isVerified, SubscriptionType subscription) {
         this.userID = userID;
@@ -51,6 +54,21 @@ public class  User implements Owner{
         }
     }
 
+    public void createBookMatch(Book bookA, Book bookB, User userA, User userB){
+        BookMatch match = new BookMatch(
+                bookA,
+                bookB,
+                userA,
+                userB,
+                rand.nextInt(9000),
+                LocalDateTime.now(),
+                BookMatch.MatchState.ACCEPTED,
+                null                 // logistics or delivery info
+        );
+        this.matches.add(match);
+        userB.matches.add(match);
+    }
+
     public void swipeRight(Book book) {
         // 1. Get the owner of the book being swiped
         Owner owner = book.getOwner();
@@ -66,17 +84,7 @@ public class  User implements Owner{
             if (candidate.userA.equals(this)) {
                 // 4. If yes, it's a match — you and the owner both liked each other's books
                 System.out.println("🎉 Match found between " + this.username + " and " + bookOwner.username);
-                Random rand = new Random();
-                BookMatch match = new BookMatch(
-                        candidate.bookA,               // your book they liked (optional)
-                        book,               // their book you liked
-                        this,
-                        bookOwner,
-                        rand.nextInt(9000),
-                        LocalDateTime.now(),
-                        BookMatch.MatchState.ACCEPTED,
-                        null                 // logistics or delivery info
-                );
+                createBookMatch(candidate.bookA,book,this,bookOwner);
                 found = true;
                 break;
             }
