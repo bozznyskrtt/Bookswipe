@@ -7,8 +7,7 @@ public class BookMatch extends BookCandidate{
     Logistics deliveryInfo;
     User userB;
     Book bookB;
-
-    enum MatchState { PENDING, ACCEPTED, REJECTED }
+    enum MatchState { ACCEPTED, DECLINED }
 
     public BookMatch(Book bookA, Book bookB, User userA, User userB, int matchID, LocalDateTime createdAt, MatchState state, Logistics deliveryInfo) {
         super(bookA, userA);

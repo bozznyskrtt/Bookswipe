@@ -1,47 +1,52 @@
 public class Book {
-    int bookID;
-    String title;
-    String author;
-    Owner owner; // User or Library
-    String genre;
-    String description;
-    String coverImage;
-    String bookCondition;
-    boolean isAvailable;
-    String availableFor; // swap, lend, buy
-    Status status;
+    private int bookID;
+    private BookTemplate template;
+    private Owner owner;
+    private String bookCondition;
+    private boolean isAvailable;
+    private String availableFor;
+    private Status status;
 
-    enum Status { AVAILABLE, SWIPED, MATCHED, INTRANSIT }
+    public enum Status {
+        AVAILABLE, SWIPED, MATCHED, INTRANSIT
+    }
 
-    public Book(int bookID, String title, String author, Owner owner, String genre, String description, String coverImage, String bookCondition, boolean isAvailable, String availableFor, Status status) {
+    public Book(int bookID, BookTemplate template, Owner owner, String bookCondition,
+                boolean isAvailable, String availableFor, Status status) {
         this.bookID = bookID;
-        this.title = title;
-        this.author = author;
+        this.template = template;
         this.owner = owner;
-        this.genre = genre;
-        this.description = description;
-        this.coverImage = coverImage;
         this.bookCondition = bookCondition;
         this.isAvailable = isAvailable;
         this.availableFor = availableFor;
         this.status = status;
     }
 
-    public void getName() {
-        if (owner instanceof User) {
-            System.out.println(((User) owner).getName());
-        } else if (owner instanceof Library) {
-            System.out.println(((Library) owner).getName());
-        } else {
-            System.out.println("Unknown owner");
-        }
-    }
-
     public Owner getOwner() {
-        return this.owner;
+        return owner;
     }
 
-    public String getTitle(){
-        return this.title;
+    public BookTemplate getTemplate() {
+        return template;
+    }
+
+    public String getBookCondition() {
+        return bookCondition;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public String getAvailableFor() {
+        return availableFor;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public int getBookID() {
+        return bookID;
     }
 }

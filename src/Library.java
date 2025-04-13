@@ -1,6 +1,6 @@
 import java.util.List;
 
-public class Library implements Owner{
+public class Library implements Owner {
     int libraryID;
     String name;
     String location;
@@ -16,6 +16,8 @@ public class Library implements Owner{
         this.borrowLimit = borrowLimit;
         this.borrowDuration = borrowDuration;
     }
+
+
 
     @Override
     public int getID() {

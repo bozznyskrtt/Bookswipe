@@ -9,7 +9,6 @@ public class  User implements Owner{
     String userPassword;
     String email;
     String address;
-    boolean isLibrarian;
     boolean isVerified;
     SubscriptionType subscription;
     List<BookCandidate> bookCandidates;
@@ -18,13 +17,12 @@ public class  User implements Owner{
     Random rand = new Random();
 
 
-    public User(int userID, String username, String userPassword, String email, String address, boolean isLibrarian, boolean isVerified, SubscriptionType subscription) {
+    public User(int userID, String username, String userPassword, String email, String address, boolean isVerified, SubscriptionType subscription) {
         this.userID = userID;
         this.username = username;
         this.userPassword = userPassword;
         this.email = email;
         this.address = address;
-        this.isLibrarian = isLibrarian;
         this.isVerified = isVerified;
         this.subscription = subscription;
         this.bookCandidates = new ArrayList<>();
@@ -48,10 +46,33 @@ public class  User implements Owner{
 
         System.out.println("Book candidates for " + this.username + ":");
         for (BookCandidate candidate : bookCandidates) {
-            String bookTitle = (candidate.bookA != null) ? candidate.bookA.getTitle() : "Unknown Book";
+            String bookTitle = (candidate.bookA != null) ? candidate.bookA.getTemplate().getTitle() : "Unknown Book";
             String userName = (candidate.userA != null) ? candidate.userA.getName() : "Unknown User";
             System.out.println("User: " + userName + " Book: " + bookTitle);
         }
+    }
+
+    public Book addswapbook( String title, String author, String genre, String description, String coverImage, String bookCondition) {
+        BookTemplate template = null;
+
+        // Check if template exists
+        for (BookTemplate t : TemplateManager.allTemplates) {
+            if (t.getTitle().equalsIgnoreCase(title) && t.getAuthor().equalsIgnoreCase(author)) {
+                template = t;
+                break;
+            }
+        }
+
+        // If not found, create a new one and add to the global list
+        if (template == null) {
+            template = new BookTemplate(title, author, genre, description, coverImage);
+            TemplateManager.allTemplates.add(template);
+        }
+
+        // Create the actual book
+        Book book = new Book(rand.nextInt(9000), template, this, bookCondition, true, "swap", Book.Status.AVAILABLE);
+        template.addbook(book);
+        return book;
     }
 
     public void createBookMatch(Book bookA, Book bookB, User userA, User userB){
@@ -69,32 +90,34 @@ public class  User implements Owner{
         userB.matches.add(match);
     }
 
-    public void swipeRight(Book book) {
-        // 1. Get the owner of the book being swiped
-        Owner owner = book.getOwner();
+    public void swipeRight(String name, String author) {
+        // Loop through all books under this template
+        BookTemplate template = TemplateManager.getTemplate(name, author);
 
-        // 2. Check if the owner is a User (not a Library)
-        if (!(owner instanceof User)) return;
-        // user = userB
-        User bookOwner = (User) owner;
+        for (Book book : template.getbook()) {
+            Owner owner = book.getOwner();
 
-        // 3. Check if bookOwner's bookCandidates list already contains a candidate from 'this'
-        boolean found = false;
-        for (BookCandidate candidate : bookOwner.bookCandidates) {
-            if (candidate.userA.equals(this)) {
-                // 4. If yes, it's a match — you and the owner both liked each other's books
-                System.out.println("🎉 Match found between " + this.username + " and " + bookOwner.username);
-                createBookMatch(candidate.bookA,book,this,bookOwner);
-                found = true;
-                break;
+            // We only care about other users (not myself or a library)
+            if (!(owner instanceof User) || owner.equals(this)) continue;
+
+            User bookOwner = (User) owner;
+
+            // Check if that user has already swiped right on one of MY books
+            //candidate of that book
+            boolean mutual = false;
+            for (BookCandidate candidate : bookOwner.bookCandidates) {
+                if (candidate.userA.equals(this)) {
+                    mutual = true;
+                    System.out.println("✅ Match between " + this.username + " and " + bookOwner.username);
+                    createBookMatch(candidate.bookA,book,this,bookOwner);
+                }
             }
-        }
 
-        // 5. If not found, add yourself to their bookCandidates
-        if (!found) {
-            BookCandidate candidate = new BookCandidate(book, bookOwner);
-            this.bookCandidates.add(candidate);
-            System.out.println(this.username + " swiped right on " + book.getTitle() + " by " + bookOwner.username);
+            if (!mutual) {
+                BookCandidate candidate = new BookCandidate(book, bookOwner);
+                this.bookCandidates.add(candidate);
+                System.out.println(this.username + " swiped right on " + bookOwner.getName() + "'s book.");
+            }
         }
     }
 }
